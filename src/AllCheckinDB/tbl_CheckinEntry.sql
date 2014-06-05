@@ -24,11 +24,14 @@ BEGIN
         [vc_telephone_number] [varchar](32) NULL,
         [vc_mailbox] [varchar](128) NULL,
         [dt2_checkin_time] [datetime2](7) NULL,
-    CONSTRAINT [PK_tbl_CheckinEntry] PRIMARY KEY CLUSTERED 
-    (
-        [guid_id] ASC
-    ) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+        CONSTRAINT [PK_CheckinEntry] PRIMARY KEY CLUSTERED 
+        (
+            [guid_id] ASC
+        )
     ) ON [PRIMARY]
+
+    CREATE NONCLUSTERED INDEX IX_CheckinEntry_Main ON [tbl_CheckinEntry] (vc_idcard_number ASC, nvc_name ASC)
+    CREATE NONCLUSTERED INDEX IX_CheckinEntry_Name ON [tbl_CheckinEntry] (nvc_name ASC)
 END
 GO
 
