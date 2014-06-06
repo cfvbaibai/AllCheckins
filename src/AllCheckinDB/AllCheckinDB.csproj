@@ -43,9 +43,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="sp_kf_NameQueried.sql" />
+    <Content Include="sp_kf_NameQueried_1.sql" />
+    <Content Include="sp_kf_NewGivenName_1.sql" />
     <Content Include="tbl_CheckinEntry.sql" />
-    <Content Include="sp_kf_NewCheckinEntry.sql" />
+    <Content Include="sp_kf_NewCheckinEntry_1.sql" />
+    <Content Include="tbl_GivenName.sql" />
+    <Content Include="tbl_SurName.sql" />
     <Content Include="tbl_Name.sql" />
   </ItemGroup>
   <ItemGroup>

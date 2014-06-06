@@ -1,7 +1,9 @@
 ﻿Add-Type -AssemblyName System.Web
+
+$scriptDir = Split-Path $MyInvocation.MyCommand.Path
+
 $pattern = "<a href=""[^""]+"" class=""btn btn-link"">(?<FullName>[^<]+)</a>"
-$givenNamesFilePath = "GivenNames.txt"
-$surNamesFilePath = "SurNames.txt"
+$surNamesFilePath = "$scriptDir\SurNames.txt"
 
 try {
     $webClient = New-Object net.WebClient
@@ -9,7 +11,7 @@ try {
     $gendres = 'boys', 'girls'
     $iSurName = 0
     foreach ($surName in $surNames) {
-        $givenNamesFilePath = "GivenNames\{0}.txt" -f $surName
+        $givenNamesFilePath = "$scriptDir\GivenNames\{0}.txt" -f $surName
         if (Test-Path $givenNamesFilePath) {
             Remove-Item $givenNamesFilePath
         }
