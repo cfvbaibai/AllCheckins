@@ -1,5 +1,6 @@
 ﻿Add-Type -AssemblyName System.Web
-$pattern = "<a href=""[^""]+"" class=""btn btn-link"">(?<FullName>[^<]+)</a>"$givenNamesFilePath = "GivenNames.txt"
+$pattern = "<a href=""[^""]+"" class=""btn btn-link"">(?<FullName>[^<]+)</a>"
+$givenNamesFilePath = "GivenNames.txt"
 $surNamesFilePath = "SurNames.txt"
 
 try {
