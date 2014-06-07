@@ -28,8 +28,6 @@ BEGIN
             nvc_name, vc_idcard_number, si_gendre, dt2_birthdate, nvc_address,
             vc_cellphone_number, vc_telephone_number, vc_mailbox, dt2_checkin_time
         ) ON ([Target].nvc_name = [Source].nvc_name AND [Target].vc_idcard_number = [Source].vc_idcard_number)
-    WHEN MATCHED THEN
-        UPDATE SET [Target].nvc_name = [Source].nvc_name
     WHEN NOT MATCHED THEN
         INSERT (nvc_name, vc_idcard_number, si_gendre, dt2_birthdate, nvc_address,
             vc_cellphone_number, vc_telephone_number, vc_mailbox, dt2_checkin_time)
