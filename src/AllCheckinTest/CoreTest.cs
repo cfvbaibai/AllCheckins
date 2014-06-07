@@ -7,6 +7,8 @@ using System.Linq;
 using AllCheckin.DB;
 using AllCheckin.Contract;
 using System.Globalization;
+using System.Diagnostics;
+using System.Collections.Generic;
 
 namespace AllCheckinTest
 {
@@ -167,6 +169,76 @@ namespace AllCheckinTest
                 Assert.IsFalse(storageProvider.IsNameQueried("王冉"));
                 Assert.IsFalse(storageProvider.IsNameQueried("张三"));
                 Assert.IsTrue(storageProvider.IsNameQueried("张帅"));
+            }
+        }
+
+        [TestMethod]
+        public void TestGetGivenNames()
+        {
+            using (var storageProvider = new AllCheckinSqlStorageProvider())
+            {
+                Stopwatch watch = new Stopwatch();
+                watch.Start();
+                try
+                {
+                    var givenNames = storageProvider.GetGivenNames();
+                    Console.WriteLine("Total {0} given names.", givenNames.Count);
+                }
+                finally
+                {
+                    watch.Stop();
+                    Console.WriteLine("Time Cost: {0} ms", watch.Elapsed.TotalMilliseconds);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void TestGetSurNames()
+        {
+            using (var storageProvider = new AllCheckinSqlStorageProvider())
+            {
+                var surNames = storageProvider.GetSurNames();
+                var totalWeight = surNames.Sum(surName => surName.Weight);
+                Console.WriteLine("Total Weight: {0}", totalWeight);
+                Console.WriteLine("Max Int: {0}", Int32.MaxValue);
+                Console.WriteLine("================================");
+                foreach (var surName in surNames)
+                {
+                    Console.WriteLine("{0,-16}, {1,-16}, {2}", surName.Id, surName.Chinese, surName.Weight);
+                }
+            }
+        }
+
+        [TestMethod]
+        public void TestWeightGet()
+        {
+            List<SurName> list = new List<SurName>();
+            list.Add(new SurName { Id = "0-9", Weight = 10, });
+            list.Add(new SurName { Id = "10-14", Weight = 5, });
+            list.Add(new SurName { Id = "15-24", Weight = 10, });
+            list.Add(new SurName { Id = "25-25", Weight = 1, });
+            list.Add(new SurName { Id = "26-26", Weight = 1, });
+            Assert.AreEqual("0-9", list.WeightGet(surName => surName.Weight, totalWeight => 0).Id);
+            Assert.AreEqual("0-9", list.WeightGet(surName => surName.Weight, totalWeight => 1).Id);
+            Assert.AreEqual("0-9", list.WeightGet(surName => surName.Weight, totalWeight => 3).Id);
+            Assert.AreEqual("0-9", list.WeightGet(surName => surName.Weight, totalWeight => 9).Id);
+            Assert.AreEqual("10-14", list.WeightGet(surName => surName.Weight, totalWeight => 10).Id);
+            Assert.AreEqual("10-14", list.WeightGet(surName => surName.Weight, totalWeight => 12).Id);
+            Assert.AreEqual("10-14", list.WeightGet(surName => surName.Weight, totalWeight => 14).Id);
+            Assert.AreEqual("15-24", list.WeightGet(surName => surName.Weight, totalWeight => 15).Id);
+            Assert.AreEqual("15-24", list.WeightGet(surName => surName.Weight, totalWeight => 20).Id);
+            Assert.AreEqual("15-24", list.WeightGet(surName => surName.Weight, totalWeight => 24).Id);
+            Assert.AreEqual("25-25", list.WeightGet(surName => surName.Weight, totalWeight => 25).Id);
+            Assert.AreEqual("26-26", list.WeightGet(surName => surName.Weight, totalWeight => 26).Id);
+        }
+
+        [TestMethod]
+        public void TestRandomNameSequence()
+        {
+            var sequence = new RandomNameSequence();
+            for (int i = 0; i < 100; ++i)
+            {
+                Console.WriteLine(sequence.Current);
             }
         }
     }

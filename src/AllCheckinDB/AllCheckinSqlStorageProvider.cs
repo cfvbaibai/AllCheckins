@@ -18,6 +18,53 @@ namespace AllCheckin.DB
             conn.Open();
         }
 
+        public IList<string> GetGivenNames()
+        {
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.Connection = conn;
+                cmd.CommandText = "SELECT * FROM tbl_GivenName WHERE LEN(nvc_given_name) = 1";
+                cmd.CommandType = CommandType.Text;
+
+                var givenNames = new List<string>();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        givenNames.Add(reader.GetString(0));
+                    }
+                }
+
+                return givenNames;
+            }
+        }
+
+        public IList<SurName> GetSurNames()
+        {
+            using (SqlCommand cmd = new SqlCommand())
+            {
+                cmd.Connection = conn;
+                cmd.CommandText = "SELECT * FROM tbl_SurName";
+                cmd.CommandType = CommandType.Text;
+
+                var surNames = new List<SurName>();
+                using (var reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        surNames.Add(new SurName
+                        {
+                            Id = reader.GetString(0),
+                            Chinese = reader.GetString(1),
+                            Weight = reader.GetInt32(2),
+                        });
+                    }
+                }
+
+                return surNames;
+            }
+        }
+
         public IList<string> GetNames()
         {
             using (SqlCommand cmd = new SqlCommand())

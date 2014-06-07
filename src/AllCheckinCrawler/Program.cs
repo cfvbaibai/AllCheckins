@@ -3,6 +3,7 @@ using AllCheckin.Core;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,17 +47,26 @@ namespace AllCheckinCrawler
                     sequence = new RandomIdCardNumberSequence();
                     queryType = QueryType.IdCardNumber;
                 }
+                else if (sequenceType.Equals("RN"))
+                {
+                    sequence = new RandomNameSequence();
+                    queryType = QueryType.Name;
+                }
                 else
                 {
                     throw new ArgumentException("Invalid sequence type: " + sequenceType);
                 }
                 var crawler = new Crawler(sequence);
                 crawler.PauseInterval = pause;
+                string recordFilePath = Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "AllCheckinRandomNameRecord.txt");
                 crawler.Crawl(max, queryType, progress =>
                 {
                     Console.WriteLine(
                         "[{0}/{1} keyword={2}] {3}",
                         progress.Current, progress.Total, progress.CurrentKeyword, progress.Message);
+                    File.AppendAllText(recordFilePath, progress.CurrentKeyword + Environment.NewLine);
                 });
             }
             catch (Exception e)

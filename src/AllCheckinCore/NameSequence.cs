@@ -15,8 +15,10 @@ namespace AllCheckin.Core
 
         public NameSequence()
         {
-            var storageProvider = new AllCheckinSqlStorageProvider();
-            names = storageProvider.GetNames();
+            using (var storageProvider = new AllCheckinSqlStorageProvider())
+            {
+                names = storageProvider.GetNames();
+            }
             Reset();
         }
 
