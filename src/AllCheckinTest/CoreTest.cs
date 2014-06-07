@@ -87,12 +87,15 @@ namespace AllCheckinTest
             innerSequence.Seek(9);
             var sequence = new TextSequence<long>(innerSequence);
             var crawler = new Crawler(sequence);
-            crawler.Crawl(3, QueryType.IdCardNumber, progress =>
+            crawler.AfterCrawl += (sender, e) =>
             {
+                var progress = e.Progress;
                 Console.WriteLine(
                     "[{0}/{1} keyword={2}] {3}",
                     progress.Current, progress.Total, progress.CurrentKeyword, progress.Message);
-            });
+            };
+
+            crawler.Crawl(3, QueryType.IdCardNumber);
         }
 
         [TestMethod]
@@ -100,12 +103,14 @@ namespace AllCheckinTest
         {
             var sequence = new RandomIdCardNumberSequence();
             var crawler = new Crawler(sequence);
-            crawler.Crawl(100, QueryType.IdCardNumber, progress =>
+            crawler.AfterCrawl += (sender, e) =>
             {
+                var progress = e.Progress;
                 Console.WriteLine(
                     "[{0}/{1} keyword={2}] {3}",
                     progress.Current, progress.Total, progress.CurrentKeyword, progress.Message);
-            });
+            };
+            crawler.Crawl(100, QueryType.IdCardNumber);
         }
 
         [TestMethod]

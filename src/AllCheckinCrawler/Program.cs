@@ -4,9 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace AllCheckinCrawler
 {
@@ -19,7 +16,7 @@ namespace AllCheckinCrawler
                 string sequenceType = args[0];
                 string start = args[1];
                 long max = long.Parse(args[2]);
-                int pause = int.Parse(args[3]);
+                int pause = int.Parse(args[3]); // Pause interval
 
                 if (args.Length < 4)
                 {
@@ -56,18 +53,55 @@ namespace AllCheckinCrawler
                 {
                     throw new ArgumentException("Invalid sequence type: " + sequenceType);
                 }
+
                 var crawler = new Crawler(sequence);
                 crawler.PauseInterval = pause;
                 string recordFilePath = Path.Combine(
                     Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
                     "AllCheckinRandomNameRecord.txt");
-                crawler.Crawl(max, queryType, progress =>
+
+                IDictionary<string, bool> processedKeywords = new Dictionary<string, bool>();
+                if (File.Exists(recordFilePath))
                 {
+                    using (StreamReader reader = new StreamReader(recordFilePath))
+                    {
+                        string line = null;
+                        while ((line = reader.ReadLine()) != null)
+                        {
+                            processedKeywords[line] = true;
+                        }
+                    }
+                }
+                Console.WriteLine("{0} processed keywords found!", processedKeywords.Count);
+                crawler.AfterCrawl += (sender, e) =>
+                {
+                    var progress = e.Progress;
+                    if (e.Error == null)
+                    {
+                        File.AppendAllText(recordFilePath, progress.CurrentKeyword + Environment.NewLine);
+                    }
+                    if (e.Error != null)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                    }
                     Console.WriteLine(
                         "[{0}/{1} keyword={2}] {3}",
                         progress.Current, progress.Total, progress.CurrentKeyword, progress.Message);
-                    File.AppendAllText(recordFilePath, progress.CurrentKeyword + Environment.NewLine);
-                });
+                    Console.ResetColor();
+                };
+                crawler.BeforeCrawl += (sender, e) =>
+                {
+                    var keyword = e.CurrentKeyword;
+                    if (processedKeywords.ContainsKey(keyword))
+                    {
+                        e.Cancel = true;
+                    }
+                    else
+                    {
+                        processedKeywords[keyword] = true;
+                    }
+                };
+                crawler.Crawl(max, queryType);
             }
             catch (Exception e)
             {
