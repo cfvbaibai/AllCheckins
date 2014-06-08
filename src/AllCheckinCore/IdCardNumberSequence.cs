@@ -55,20 +55,11 @@ namespace AllCheckin.Core
         }
     }
 
-    public class RandomIdCardNumberSequence : ISequence <string>
+    public class RandomIdCardNumberSequence : RandomSequence<string>
     {
         private static Random random = new Random();
-        public void Reset()
-        {
-            // Nothing;
-        }
 
-        public void Seek(string position)
-        {
-            // Nothing;
-        }
-
-        public string Current
+        public override string Current
         {
             get
             {
@@ -96,27 +87,17 @@ namespace AllCheckin.Core
             return orderId;
         }
 
-        public void MoveNext()
-        {
-            // Nothing;
-        }
-
-        public bool EndOfSequence
-        {
-            get { return false; }
-        }
-
         private static DateTime GetRandomTime(DateTime time1, DateTime time2)
         {
             DateTime minTime = new DateTime();
             DateTime maxTime = new DateTime();
- 
+
             System.TimeSpan ts = new System.TimeSpan(time1.Ticks - time2.Ticks);
- 
+
             // 获取两个时间相隔的秒数
             double dTotalSecontds = ts.TotalSeconds;
             int iTotalSecontds = 0;
- 
+
             if (dTotalSecontds > System.Int32.MaxValue)
             {
                 iTotalSecontds = System.Int32.MaxValue;
@@ -129,8 +110,7 @@ namespace AllCheckin.Core
             {
                 iTotalSecontds = (int)dTotalSecontds;
             }
- 
- 
+
             if (iTotalSecontds > 0)
             {
                 minTime = time2;
@@ -145,16 +125,15 @@ namespace AllCheckin.Core
             {
                 return time1;
             }
- 
+
             int maxValue = iTotalSecontds;
- 
+
             if (iTotalSecontds <= System.Int32.MinValue)
                 maxValue = System.Int32.MinValue + 1;
- 
+
             int i = random.Next(System.Math.Abs(maxValue));
- 
+
             return minTime.AddSeconds(i);
         }
-
     }
 }

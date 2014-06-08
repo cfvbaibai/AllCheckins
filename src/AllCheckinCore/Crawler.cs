@@ -17,7 +17,7 @@ namespace AllCheckin.Core
 
     public class BeforeCrawlEventArgs : EventArgs
     {
-        public string CurrentKeyword { get; set; }
+        public CrawlProgress Progress { get; set; }
         public bool Cancel { get; set; }
     }
 
@@ -48,6 +48,7 @@ namespace AllCheckin.Core
             using (IAllCheckinStorageProvider storageProvider = new AllCheckinSqlStorageProvider())
             {
                 checkinEntryProvider.Connect();
+
                 while (currentStep < maxStep && !keywordSequence.EndOfSequence)
                 {
                     var keyword = keywordSequence.Current;
@@ -58,14 +59,17 @@ namespace AllCheckin.Core
                             var args = new BeforeCrawlEventArgs
                             {
                                 Cancel = false,
-                                CurrentKeyword = keyword,
+                                Progress = new CrawlProgress
+                                {
+                                    Current = currentStep,
+                                    Total = maxStep,
+                                    CurrentKeyword = keyword,
+                                    Message = "Already processed. Skip!",
+                                }
                             };
                             BeforeCrawl.Invoke(this, args);
                             if (args.Cancel)
                             {
-                                Console.ForegroundColor = ConsoleColor.Yellow;
-                                Console.WriteLine("{0} already processed. Skip!", args.CurrentKeyword);
-                                Console.ResetColor();
                                 continue;
                             }
                         }
@@ -93,7 +97,8 @@ namespace AllCheckin.Core
                         Trace.TraceError("[keyword = {0}] {1}", keywordSequence.Current, e);
                         if (AfterCrawl != null)
                         {
-                            AfterCrawl.Invoke(this, new AfterCrawlEventArgs {
+                            AfterCrawl.Invoke(this, new AfterCrawlEventArgs
+                            {
                                 Error = e,
                                 Progress = new CrawlProgress
                                 {
@@ -105,10 +110,13 @@ namespace AllCheckin.Core
                             });
                         }
                     }
+                    finally
+                    {
+                        ++currentStep;
+                        keywordSequence.MoveNext();
 
-                    ++currentStep;
-                    keywordSequence.MoveNext();
-                    Thread.Sleep(PauseInterval);
+                        Thread.Sleep(PauseInterval);
+                    }
                 }
             }
         }

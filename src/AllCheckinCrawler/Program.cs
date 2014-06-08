@@ -1,5 +1,6 @@
 ﻿using AllCheckin.Contract;
 using AllCheckin.Core;
+using Cfvbaibai.CommonUtils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -55,14 +56,16 @@ namespace AllCheckin.CrawlerCli
             crawler.AfterCrawl += (sender, e) =>
             {
                 var progress = e.Progress;
-                if (e.Error != null)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                }
-                Console.WriteLine(
-                    "[{0}/{1} keyword={2}] {3}",
+                var message = string.Format("[{0}/{1} keyword={2}] {3}",
                     progress.Current, progress.Total, progress.CurrentKeyword, progress.Message);
-                Console.ResetColor();
+                if (e.Error == null)
+                {
+                    PowerConsole.Info(message);
+                }
+                else
+                {
+                    PowerConsole.Error(message);
+                }
             };
 
             return crawler;
@@ -90,10 +93,14 @@ namespace AllCheckin.CrawlerCli
 
             crawler.BeforeCrawl += (sender, e) =>
             {
-                var keyword = e.CurrentKeyword;
+                var keyword = e.Progress.CurrentKeyword;
                 if (processedKeywords.ContainsKey(keyword))
                 {
                     e.Cancel = true;
+                    var progress = e.Progress;
+                    PowerConsole.WarningF(
+                        "[{0}/{1} keyword={2}] {3}",
+                        progress.Current, progress.Total, progress.CurrentKeyword, progress.Message);
                 }
                 else
                 {
