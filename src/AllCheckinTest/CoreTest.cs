@@ -1,14 +1,15 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using AllCheckin.Contract;
 using AllCheckin.Core;
-using System.Net;
+using AllCheckin.DB;
+using Cfvbaibai.CommonUtils;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-using AllCheckin.DB;
-using AllCheckin.Contract;
-using System.Globalization;
-using System.Diagnostics;
-using System.Collections.Generic;
+using System.Net;
 
 namespace AllCheckinTest
 {
@@ -34,32 +35,10 @@ namespace AllCheckinTest
         [TestMethod]
         public void TestRobot()
         {
-            HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create("http://zhaokaifang.com/q.php");
-            request.Method = "POST";
-            request.Accept = "*/*";
-            request.Headers[HttpRequestHeader.AcceptEncoding] = "gzip,deflate,sdch";
-            request.Headers[HttpRequestHeader.AcceptLanguage] = "zh-CN,zh;q=0.8,en;q=0.6,zh-TW;q=0.4";
-            request.KeepAlive = true;
-            request.ContentLength = 14;
-            request.ContentType = "application/x-www-form-urlencoded";
-            request.Headers[HttpRequestHeader.Cookie] = "bdshare_firstime=1401624144679; CNZZDATA1000135535=306085563-1401624139-%7C1401624139";
-            request.Host = "zhaokaifang.com";
-            request.Headers["Origin"] = "http://zhaokaifang.com/";
-            request.Referer = "http://zhaokaifang.com/";
-            request.UserAgent = "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/33.0.1750.154 Safari/537.36";
-            request.Headers["X-Requested-With"] = "XMLHttpRequest";
-            using (var writer = new StreamWriter(request.GetRequestStream()))
-            {
-                writer.Write("name=&idcard=1");
-            }
-
-            using (var response = request.GetResponse())
-            {
-                using (var reader = new StreamReader(response.GetResponseStream()))
-                {
-                    Console.WriteLine(reader.ReadToEnd());
-                }
-            }
+            WebRobot robot = new WebRobot();
+            robot.IsAjax = true;
+            var response = robot.Post("http://zhaokaifang.com/q.php", "application/x-www-form-urlencoded", "name=&idcard=1");
+            Console.WriteLine(response);
         }
 
         [TestMethod]

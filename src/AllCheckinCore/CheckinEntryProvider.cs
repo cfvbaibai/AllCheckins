@@ -1,4 +1,5 @@
 ﻿using AllCheckin.Contract;
+using Cfvbaibai.CommonUtils;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -35,6 +36,10 @@ namespace AllCheckin.Core
         public CheckinEntryProvider()
         {
             this.webRobot = new WebRobot();
+            webRobot.Referer = "http://zhaokaifang.com/";
+            webRobot.Host = "zhaokaifang.com";
+            webRobot.Origin = "http://zhaokaifang.com/";
+            webRobot.IsAjax = true;
         }
 
         public void Connect()
@@ -64,7 +69,7 @@ namespace AllCheckin.Core
             {
                 throw new ArgumentException("Invalid query type: " + queryType);
             }
-            var response = webRobot.PostAjax(QueryPageUrl, queryString);
+            var response = webRobot.Post(QueryPageUrl, "application/x-www-form-urlencoded", queryString);
             /* response:
              * <table cellspacing="0" cellpadding="0" class="tb2">
              * <tr><th>姓名</th><th>证件</th><th>性别</th><th>生日</th><th>地址</th><th>手机</th><th>电话</th><th>邮箱</th><th>开房时间</th></tr>

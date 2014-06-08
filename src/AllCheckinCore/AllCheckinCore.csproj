@@ -41,10 +41,8 @@
   <ItemGroup>
     <Compile Include="CheckinEntryProvider.cs" />
     <Compile Include="CheckinException.cs" />
-    <Compile Include="CollectionUtil.cs" />
     <Compile Include="Crawler.cs" />
     <Compile Include="IdCardNumberSequence.cs" />
-    <Compile Include="R.cs" />
     <Compile Include="RandomNameSequence.cs" />
     <Compile Include="NameSequence.cs" />
     <Compile Include="NaturalNumberSequence.cs" />
@@ -52,10 +50,12 @@
     <Compile Include="ObjectDumper.cs" />
     <Compile Include="RandomSequence.cs" />
     <Compile Include="RegionCode.cs" />
-    <Compile Include="WebRobot.cs" />
-    <Compile Include="XmlHelper.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\submodules\Common\src\CommonUtils\CommonUtils.csproj">
+      <Project>{e1f40c7f-91e2-4567-86e3-d51d42c1b1fc}</Project>
+      <Name>CommonUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AllCheckinDB\AllCheckinDB.csproj">
       <Project>{9baf4576-f4f7-47ce-be20-3bb9a27c6529}</Project>
       <Name>AllCheckinDB</Name>

@@ -54,6 +54,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\submodules\Common\src\CommonUtils\CommonUtils.csproj">
+      <Project>{e1f40c7f-91e2-4567-86e3-d51d42c1b1fc}</Project>
+      <Name>CommonUtils</Name>
+    </ProjectReference>
     <ProjectReference Include="..\AllCheckinCore\AllCheckinCore.csproj">
       <Project>{1447609e-6b88-415b-9fff-50bb8166e046}</Project>
       <Name>AllCheckinCore</Name>
