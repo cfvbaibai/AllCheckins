@@ -170,5 +170,16 @@ namespace AllCheckin.DB
         {
             this.conn.Dispose();
         }
+
+
+        public DateTime NormalizeDateTime(DateTime dateTime)
+        {
+            // DateTime2 cannot represent date prior to year 1753
+            if (dateTime.Year < 1753)
+            {
+                return new DateTime(1753, 1, 1);
+            }
+            return dateTime;
+        }
     }
 }
