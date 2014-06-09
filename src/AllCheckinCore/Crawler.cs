@@ -87,7 +87,7 @@ namespace AllCheckin.Core
                                     Current = currentStep,
                                     Total = maxStep,
                                     CurrentKeyword = keyword,
-                                    Message = entries.Count + " entry(s) updated."
+                                    Message = string.Format("{0,5} entry(s) updated.", entries.Count)
                                 }
                             });
                         }

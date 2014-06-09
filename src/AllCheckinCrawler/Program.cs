@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace AllCheckin.CrawlerCli
 {
@@ -14,7 +15,26 @@ namespace AllCheckin.CrawlerCli
         {
             public ISequence<string> Sequence { get; set; }
             public QueryType QueryType { get; set; }
+
+            public long MaximumTry { get; set; }
             public int Pause { get; set; }
+
+            public FixedCapacityPipeline<bool> CancelStatQueue { get; private set; }
+
+            public decimal CancelRate
+            {
+                get
+                {
+                    var items = CancelStatQueue.ToList();
+                    if (items.Count == 0) { return 0m; }
+                    return items.Sum(item => item ? 1m : 0m) / (decimal)items.Count;
+                }
+            }
+
+            public CrawlContext()
+            {
+                this.CancelStatQueue = new FixedCapacityPipeline<bool>(1000);
+            }
         }
 
         public static void Main(string[] args)
@@ -31,7 +51,7 @@ namespace AllCheckin.CrawlerCli
                     throw new ArgumentException("Invalid number of arguments!");
                 }
 
-                CrawlContext context = GetCrawlContext(sequenceType, start, pause);
+                CrawlContext context = GetCrawlContext(sequenceType, start, max, pause);
                 Crawler crawler = CreateCrawler(context);
 
                 crawler.Crawl(max, context.QueryType);
@@ -43,6 +63,11 @@ namespace AllCheckin.CrawlerCli
             }
         }
 
+        private static string GetMessageFormat(long maximumTry)
+        {
+            return "[{0," + maximumTry.ToString().Length + "}/{1} cancel={2,7:P2} keyword={3}] {4}";
+        }
+
         private static Crawler CreateCrawler(CrawlContext context)
         {
             var crawler = new Crawler(context.Sequence);
@@ -50,14 +75,14 @@ namespace AllCheckin.CrawlerCli
 
             if (context.QueryType == QueryType.Name)
             {
-                ExtraSetupForNameBasedCrawler(crawler);
+                ExtraSetupForNameBasedCrawler(crawler, context);
             }
 
             crawler.AfterCrawl += (sender, e) =>
             {
                 var progress = e.Progress;
-                var message = string.Format("[{0}/{1} keyword={2}] {3}",
-                    progress.Current, progress.Total, progress.CurrentKeyword, progress.Message);
+                var message = string.Format(GetMessageFormat(context.MaximumTry),
+                    progress.Current, progress.Total, context.CancelRate, progress.CurrentKeyword, progress.Message);
                 if (e.Error == null)
                 {
                     PowerConsole.Info(message);
@@ -71,7 +96,7 @@ namespace AllCheckin.CrawlerCli
             return crawler;
         }
 
-        private static void ExtraSetupForNameBasedCrawler(Crawler crawler)
+        private static void ExtraSetupForNameBasedCrawler(Crawler crawler, CrawlContext context)
         {
             string recordFilePath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
@@ -96,14 +121,16 @@ namespace AllCheckin.CrawlerCli
                 var keyword = e.Progress.CurrentKeyword;
                 if (processedKeywords.ContainsKey(keyword))
                 {
+                    context.CancelStatQueue.Enqueue(true);
                     e.Cancel = true;
                     var progress = e.Progress;
                     PowerConsole.WarningF(
-                        "[{0}/{1} keyword={2}] {3}",
-                        progress.Current, progress.Total, progress.CurrentKeyword, progress.Message);
+                        GetMessageFormat(context.MaximumTry),
+                        progress.Current, progress.Total, context.CancelRate, progress.CurrentKeyword, progress.Message);
                 }
                 else
                 {
+                    context.CancelStatQueue.Enqueue(false);
                     processedKeywords[keyword] = true;
                 }
             };
@@ -117,7 +144,7 @@ namespace AllCheckin.CrawlerCli
             };
         }
 
-        private static CrawlContext GetCrawlContext(string sequenceType, string start, int pause)
+        private static CrawlContext GetCrawlContext(string sequenceType, string start, long max, int pause)
         {
             ISequence<string> sequence;
             QueryType queryType;
@@ -151,6 +178,7 @@ namespace AllCheckin.CrawlerCli
             return new CrawlContext
             {
                 Sequence = sequence,
+                MaximumTry = max,
                 QueryType = queryType,
                 Pause = pause,
             };
