@@ -76,6 +76,14 @@ namespace AllCheckin.Core
                         var entries = checkinEntryProvider.GetEntries(queryType, keyword).ToList();
                         foreach (var entry in entries)
                         {
+                            if (entry.Birthdate != null)
+                            {
+                                entry.Birthdate = storageProvider.NormalizeDateTime(entry.Birthdate.Value);
+                            }
+                            if (entry.CheckinTime != null)
+                            {
+                                entry.CheckinTime = storageProvider.NormalizeDateTime(entry.CheckinTime.Value);
+                            }
                             storageProvider.SaveEntry(entry);
                         }
                         if (AfterCrawl != null)
@@ -94,7 +102,7 @@ namespace AllCheckin.Core
                     }
                     catch (Exception e)
                     {
-                        Trace.TraceError("[keyword = {0}] {1}", keywordSequence.Current, e);
+                        Trace.TraceError("[keyword = {0}] {1}", keyword, e);
                         if (AfterCrawl != null)
                         {
                             AfterCrawl.Invoke(this, new AfterCrawlEventArgs
