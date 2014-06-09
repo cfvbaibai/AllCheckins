@@ -17,12 +17,28 @@ namespace AllCheckinTest
     public class CoreTest
     {
         [TestMethod]
-        public void TestGetEntry()
+        public void TestGetEntryById()
         {
             using (ICheckinEntryProvider provider = new CheckinEntryProvider())
             {
                 provider.Connect();
                 var entries = provider.GetEntries(QueryType.IdCardNumber, "1");
+                Console.WriteLine("{0} entry(s) found!", entries.Count());
+                foreach (var entry in entries)
+                {
+                    Console.WriteLine("entry found: ");
+                    Console.WriteLine(ObjectDumper.ShallowDumpProperties(entry, 4));
+                }
+            }
+        }
+
+        [TestMethod]
+        public void TestGetEntryByName()
+        {
+            using (ICheckinEntryProvider provider = new CheckinEntryProvider())
+            {
+                provider.Connect();
+                var entries = provider.GetEntries(QueryType.Name, "张春贺");
                 Console.WriteLine("{0} entry(s) found!", entries.Count());
                 foreach (var entry in entries)
                 {

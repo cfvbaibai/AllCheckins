@@ -47,7 +47,6 @@
     <Compile Include="NameSequence.cs" />
     <Compile Include="NaturalNumberSequence.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ObjectDumper.cs" />
     <Compile Include="RandomSequence.cs" />
     <Compile Include="RegionCode.cs" />
   </ItemGroup>
