@@ -24,17 +24,14 @@ namespace AllCheckin.Core
             Reset();
         }
 
-        public override string Current
+        public override string GenerateItem()
         {
-            get
+            while (true)
             {
-                while (true)
-                {
-                    var currentSurName = surNames.WeightGet(surName => surName.Weight);
-                    var currentGivenName = givenNames.WeightGet(givenName => 1);
-                    var current = currentSurName.Chinese + currentGivenName;
-                    return current;
-                }
+                var currentSurName = surNames.WeightGet(surName => surName.Weight);
+                var currentGivenName = givenNames.WeightGet(givenName => 1);
+                var current = currentSurName.Chinese + currentGivenName;
+                return current;
             }
         }
     }

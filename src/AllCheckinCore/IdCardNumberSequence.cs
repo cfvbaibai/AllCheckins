@@ -59,17 +59,14 @@ namespace AllCheckin.Core
     {
         private static Random random = new Random();
 
-        public override string Current
+        public override string GenerateItem()
         {
-            get
-            {
-                int regionCodeIndex = random.Next(RegionCode.FullList.Count);
-                int regionCode = RegionCode.FullList[regionCodeIndex].Code;
-                DateTime birthdate = GetRandomTime(new DateTime(1960, 1, 1), new DateTime(1997, 1, 1));
-                int orderId = GetRandomOrderId();
-                IdCardNumber number = new IdCardNumber { Birthdate = birthdate, RegionNumber = regionCode, OrderId = orderId };
-                return number.FullNumber;
-            }
+            int regionCodeIndex = random.Next(RegionCode.FullList.Count);
+            int regionCode = RegionCode.FullList[regionCodeIndex].Code;
+            DateTime birthdate = GetRandomTime(new DateTime(1960, 1, 1), new DateTime(1997, 1, 1));
+            int orderId = GetRandomOrderId();
+            IdCardNumber number = new IdCardNumber { Birthdate = birthdate, RegionNumber = regionCode, OrderId = orderId };
+            return number.FullNumber;
         }
 
         private static int GetRandomOrderId()

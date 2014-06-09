@@ -9,9 +9,15 @@ namespace AllCheckin.Core
 {
     public abstract class RandomSequence<T> : ISequence<T>
     {
+        private T current;
+
+        public RandomSequence()
+        {
+            Reset();
+        }
         public void Reset()
         {
-            // Do nothing
+            this.current = GenerateItem();
         }
 
         public void Seek(T position)
@@ -19,11 +25,13 @@ namespace AllCheckin.Core
             // Do nothing
         }
 
-        public abstract T Current { get; }
+        public T Current { get { return current; } }
+
+        public abstract T GenerateItem();
 
         public void MoveNext()
         {
-            // Do nothing
+            GenerateItem();
         }
 
         public bool EndOfSequence
