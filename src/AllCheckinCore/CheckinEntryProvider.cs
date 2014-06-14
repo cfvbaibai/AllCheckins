@@ -20,6 +20,8 @@ namespace AllCheckin.Core
         private WebRobot webRobot;
         private const string BaseServerUrl = "http://zhaokaifang.com";
         private const string QueryPageUrl = BaseServerUrl + "/q.php";
+        /*<tr><td>刘焕</td><td>320322198709044226</td><td>女</td><td>19870904</td><td>沛县公安局 
+ 江苏省沛县朱寨镇刘集26号</td><td>...........</td><td></td><td></td><td>2012-9-1 2:30:46</td></tr>*/
         private const string EntryLinePattern =
             @"<tr>\s*" +
                 @"<td>\s*(?<Name>.*)\s*</td>\s*" +
@@ -98,6 +100,7 @@ namespace AllCheckin.Core
             for (int i = 0; i < lines.Count; ++i)
             {
                 var line = lines[i].ToString();
+                line = line.Trim().Replace("\r\n", " ").Replace('\n', ' ').Replace('\r', ' ').Replace('\t', ' ');
                 var match = Regex.Match(line, EntryLinePattern, RegexOptions.Compiled | RegexOptions.IgnoreCase);
                 if (match.Success)
                 {

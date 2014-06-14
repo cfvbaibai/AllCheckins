@@ -25,15 +25,13 @@ namespace AllCheckin.CrawlerCli
             {
                 get
                 {
-                    var items = CancelStatQueue.ToList();
-                    if (items.Count == 0) { return 0m; }
-                    return items.Sum(item => item ? 1m : 0m) / (decimal)items.Count;
+                    return CancelStatQueue.ToList().Select(item => item ? 1m : 0m).ToList().Average();
                 }
             }
 
             public CrawlContext()
             {
-                this.CancelStatQueue = new FixedCapacityPipeline<bool>(1000);
+                this.CancelStatQueue = new FixedCapacityPipeline<bool>(2000);
             }
         }
 

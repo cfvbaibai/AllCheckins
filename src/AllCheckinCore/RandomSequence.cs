@@ -13,6 +13,7 @@ namespace AllCheckin.Core
 
         public RandomSequence()
         {
+            Initialize();
             Reset();
         }
         public void Reset()
@@ -29,9 +30,14 @@ namespace AllCheckin.Core
 
         public abstract T GenerateItem();
 
+        public virtual void Initialize()
+        {
+            // Do nothing
+        }
+
         public void MoveNext()
         {
-            GenerateItem();
+            this.current = GenerateItem();
         }
 
         public bool EndOfSequence

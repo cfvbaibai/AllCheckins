@@ -38,7 +38,7 @@ namespace AllCheckinTest
             using (ICheckinEntryProvider provider = new CheckinEntryProvider())
             {
                 provider.Connect();
-                var entries = provider.GetEntries(QueryType.Name, "张春贺");
+                var entries = provider.GetEntries(QueryType.Name, "朱磊");
                 Console.WriteLine("{0} entry(s) found!", entries.Count());
                 foreach (var entry in entries)
                 {
@@ -239,6 +239,27 @@ namespace AllCheckinTest
             for (int i = 0; i < 100; ++i)
             {
                 Console.WriteLine(sequence.Current);
+            }
+        }
+
+        [TestMethod]
+        public void TestCenterAvg()
+        {
+            var list = new List<decimal>();
+            for (int i = 0; i < 10; ++i)
+            {
+                Console.WriteLine("CenterAvg[{0}] = {1}", i, list.CenterAvg());
+                list.Add(1m);
+            }
+            Console.WriteLine("==================================");
+            list.Clear();
+            var window = 7;
+            list.AddRange(new decimal[] { 10, 20, 30, 40, 50, 60, 50, 40, 30, 20, 10 });
+            for (int i = 0; i <= list.Count - window; ++i)
+            {
+                var itemsInWindow = list.Take(i + window).Reverse().Take(window).ToList();
+                Console.WriteLine("CenterAvg[{0}] = {1}", i, itemsInWindow.CenterAvg());
+                Console.WriteLine("NormalAvg[{0}] = {1}", i, itemsInWindow.Average());
             }
         }
     }

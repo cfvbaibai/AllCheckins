@@ -9,7 +9,7 @@ namespace AllCheckin.CrawlerCli
     public class FixedCapacityPipeline <T>
     {
         private Queue <T> cancelQueue;
-        private int capacity;
+        public int Capacity { get; private set; }
 
         public FixedCapacityPipeline(int capacity)
         {
@@ -17,14 +17,14 @@ namespace AllCheckin.CrawlerCli
             {
                 throw new ArgumentException("Capacity must be positive integer.");
             }
-            this.capacity = capacity;
+            this.Capacity = capacity;
             this.cancelQueue = new Queue<T>(capacity);
         }
 
         public T Enqueue(T cancelled)
         {
             cancelQueue.Enqueue(cancelled);
-            if (cancelQueue.Count > capacity)
+            if (cancelQueue.Count > Capacity)
             {
                 return cancelQueue.Dequeue();
             }
