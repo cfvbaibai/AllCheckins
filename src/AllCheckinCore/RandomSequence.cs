@@ -13,8 +13,6 @@ namespace AllCheckin.Core
 
         public RandomSequence()
         {
-            Initialize();
-            Reset();
         }
         public void Reset()
         {
@@ -32,7 +30,7 @@ namespace AllCheckin.Core
 
         public virtual void Initialize()
         {
-            // Do nothing
+            Reset();
         }
 
         public void MoveNext()

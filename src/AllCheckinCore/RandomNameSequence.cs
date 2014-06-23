@@ -13,14 +13,8 @@ namespace AllCheckin.Core
     {
         private IList<SurName> surNames;
         private IList<string> givenNames;
-        private int givenNameLength;
 
         public RandomNameSequence(int givenNameLength)
-        {
-            this.givenNameLength = givenNameLength;
-        }
-
-        public override void Initialize()
         {
             using (var storageProvider = new AllCheckinSqlStorageProvider())
             {

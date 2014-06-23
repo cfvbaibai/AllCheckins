@@ -19,6 +19,10 @@ namespace AllCheckin.Core
             {
                 names = storageProvider.GetNames();
             }
+        }
+
+        public void Initialize()
+        {
             Reset();
         }
 

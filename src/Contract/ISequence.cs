@@ -17,5 +17,7 @@ namespace AllCheckin.Contract
         void MoveNext();
 
         bool EndOfSequence { get; }
+
+        void Initialize();
     }
 }

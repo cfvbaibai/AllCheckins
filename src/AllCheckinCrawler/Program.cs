@@ -19,6 +19,8 @@ namespace AllCheckin.CrawlerCli
             public long MaximumTry { get; set; }
             public int Pause { get; set; }
 
+            public string SequenceType { get; set; }
+
             public FixedCapacityPipeline<bool> CancelStatQueue { get; private set; }
 
             public decimal CancelRate
@@ -98,7 +100,7 @@ namespace AllCheckin.CrawlerCli
         {
             string recordFilePath = Path.Combine(
                 Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
-                "AllCheckinRandomNameRecord.txt");
+                "AllCheckinRandomNameRecord-" + context.SequenceType + ".txt");
             IDictionary<string, bool> processedKeywords = new Dictionary<string, bool>();
 
             if (File.Exists(recordFilePath))
@@ -178,9 +180,11 @@ namespace AllCheckin.CrawlerCli
             {
                 throw new ArgumentException("Invalid sequence type: " + sequenceType);
             }
+            sequence.Initialize();
             return new CrawlContext
             {
                 Sequence = sequence,
+                SequenceType = sequenceType,
                 MaximumTry = max,
                 QueryType = queryType,
                 Pause = pause,

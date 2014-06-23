@@ -14,7 +14,7 @@ namespace AllCheckin.Contract
 
         IList<string> GetNamesOrderByCount();
 
-        IList<string> GetGivenNames();
+        IList<string> GetGivenNames(int givenNameLength);
 
         IList<SurName> GetSurNames();
 

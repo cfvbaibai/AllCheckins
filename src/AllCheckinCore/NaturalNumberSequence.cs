@@ -14,6 +14,10 @@ namespace AllCheckin.Core
 
         public NaturalNumberSequence()
         {
+        }
+
+        public void Initialize()
+        {
             Reset();
         }
 
@@ -62,6 +66,12 @@ namespace AllCheckin.Core
         {
             this.innerSequence = innerSequence;
         }
+
+        public void Initialize()
+        {
+            Reset();
+        }
+
         public void Reset()
         {
             innerSequence.Reset();
