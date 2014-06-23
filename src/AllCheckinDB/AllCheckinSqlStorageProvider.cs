@@ -18,12 +18,20 @@ namespace AllCheckin.DB
             conn.Open();
         }
 
-        public IList<string> GetGivenNames()
+        public IList<string> GetGivenNames(int givenNameLength)
         {
             using (SqlCommand cmd = new SqlCommand())
             {
                 cmd.Connection = conn;
-                cmd.CommandText = "SELECT * FROM tbl_GivenName WHERE LEN(nvc_given_name) = 1";
+                cmd.CommandText = "SELECT * FROM tbl_GivenName";
+                if (givenNameLength == 1)
+                {
+                    cmd.CommandText += " WHERE LEN(nvc_given_name) = " + givenNameLength;
+                }
+                else if (givenNameLength > 1)
+                {
+                    cmd.CommandText += " WHERE LEN(nvc_given_name) >= " + givenNameLength;
+                }
                 cmd.CommandType = CommandType.Text;
 
                 var givenNames = new List<string>();

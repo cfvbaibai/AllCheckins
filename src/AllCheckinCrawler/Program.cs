@@ -164,9 +164,14 @@ namespace AllCheckin.CrawlerCli
                 sequence = new RandomIdCardNumberSequence();
                 queryType = QueryType.IdCardNumber;
             }
-            else if (sequenceType.Equals("RN"))
+            else if (sequenceType.Equals("RN1"))
             {
-                sequence = new RandomNameSequence();
+                sequence = new RandomNameSequence(1);
+                queryType = QueryType.Name;
+            }
+            else if (sequenceType.Equals("RN2"))
+            {
+                sequence = new RandomNameSequence(2);
                 queryType = QueryType.Name;
             }
             else
