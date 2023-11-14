@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace AllCheckin.Contract
 {
+    // 18113746351 Feng
     public class SurName
     {
         public string Id { get; set; }
